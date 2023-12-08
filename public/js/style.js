@@ -25,4 +25,40 @@
     
 // //     }
 // // })
+$(document).ready( function () {
+    $('#myTable').DataTable({
+        'column' : [
+            {data : 'id'},
+            {data : 'Username'},
+            {data : 'ville'},
+            {data : 'Quartier'},
+            {data : 'Rue'},
+            {data : 'Code Postal'},
+            {data : 'Email'},
+            {data : 'Phone'}
+        ]
 
+
+
+
+    });
+    
+} );
+
+// =================
+
+const slideBtn = document.getElementById('slideBar');
+const slideControl = document.getElementById('sideControl');
+
+slideBtn.onclick = () => {
+
+    if (slideControl.classList.contains('open')) {
+        slideControl.classList.remove('open');
+        slideControl.classList.add('close');
+
+    }else {
+        slideControl.classList.add('open');
+        slideControl.classList.remove('close');
+    }
+
+}

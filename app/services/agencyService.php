@@ -3,7 +3,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/repositories/Database.php");
 require_once("AgencyServiceInterface.php");
 
-class AgencyService implements AgencyInterface{
+class AgencyService implements AgencyServiceInterface{
 
     private $db ;
 
@@ -24,7 +24,7 @@ class AgencyService implements AgencyInterface{
         }
 
     }
-    public function getAgencyById($agencyId){
+    public function getAgencyById($agencyId):Agency{
         $agencyData = "select * from agency where agencyID = :agencyId";
         $this->db->query($agencyData);
         $this->db->bind(":agencyId",$agencyId);
@@ -36,37 +36,14 @@ class AgencyService implements AgencyInterface{
         }
 
     }
-    public function addAgency(Agency $agency,$adress){
-       $adrId = $adress["adressId"];
-       $addAdressQuery = "INSERT INTO `adress`(`addressID`, `ville`, `quartier`, `rue`, `codePostal`, `email`, `phone`) VALUES(:adressId,:ville,:quartier,:rue,:codePostal,:email,:phone)";
-       $this->db->query($addAdressQuery);
-        
-       $this->db->bind(":adressId",$adrId);
-       $this->db->bind(":ville",$adress["ville"]);
-       $this->db->bind(":quartier",$adress["quartier"]);
-       $this->db->bind("rue",$adress["rue"]);
-       $this->db->bind(":codePostal",$adress["codePostal"]);
-       $this->db->bind(":email",$adress["email"]);
-       $this->db->bind(":phone",$adress["phone"]);
-       
-          
-       try{
-        $this->db->execute();
-        echo "added";
-       }
-       catch(PDOException $e){
-         die($e->getMessage());
-       }
-
-       $addAgencyQuery = "INSERT INTO `agency`(`agencyID`, `longitude`, `latitude`, `bankID`, `addressID`) VALUES (:agencyId,:longitude,:latitude,:bankId,:adressId)" ;
+    public function addAgency(Agency $agency){
+       $addAgencyQuery ="insert into agency values (:id,:longitude,:latitude,:bankId,:adressId)";
        $this->db->query($addAgencyQuery);
-       $this->db->bind(":agencyId",$agency->getAgencyId());
+       $this->db->bind(":id",$agency->getAgencyId());
        $this->db->bind(":longitude",$agency->getLongitude());
        $this->db->bind(":latitude",$agency->getLatitude());
        $this->db->bind(":bankId",$agency->getBankId());
-       $this->db->bind(":adressId",$adrId);
- 
-    
+       $this->db->bind(":adressId",$agency->getAdressId());
        try{
         $this->db->execute();
         echo "added";
@@ -74,52 +51,12 @@ class AgencyService implements AgencyInterface{
        catch(PDOException $e){
          die($e->getMessage());
        }
-
     }
-    public function updateAgency(Agency $agency,$adress){
-         $updateAgency = "UPDATE `agency` SET `longitude`= :longitude,`latitude`= :latitude WHERE agencyID = :agencyId";
-         $this->db->query($updateAgency);
-         $this->db->bind(":longitude",$agency->getLongitude());
-         $this->db->bind(":latitude",$agency->getLatitude());
-         $this->db->bind(":agencyId",$agency->getAgencyId());
-         try{
-            $this->db->execute();
-            echo "updated";
-         }
-         catch(PDOException $e){
-            die($e->getMessage());
-         }
-
-
-         $updateAdress = "UPDATE `adress` SET `ville`=:ville,`quartier`=:quartier,`rue`=:rue,`codePostal`=:codePostal,`email`=:email,`phone`=:email where addressID = :adressId";
-         $this->db->query($updateAdress);
-         $this->db->bind(":ville",$adress["ville"]);
-         $this->db->bind(":quartier",$adress["quartier"]);
-         $this->db->bind(":rue",$adress["rue"]);
-         $this->db->bind(":codePostal",$adress["codePostal"]);
-         $this->db->bind(":email",$adress["email"]);
-         $this->db->bind(":phone",$adress["phone"]);
-         $this->db->bind(":adressId",$adress["adressId"]);
-
-         try{
-            $this->db->execute();
-            echo "updated";
-         }
-         catch(PDOException $e){
-            die($e->getMessage());
-         }
+    public function updateAgency(Agency $agency){
 
     }
     public function deleteAgency($agencyId){
-       $deleteAgency = "delete from agency where agencyID = :agencyId";
-       $this->db->query($deleteAgency);
-       $this->db->bind(":agencyId",$agencyId);
-       try{
-         $this->db->execute();
-       }
-       catch(PDOException $e){
-        die($e->getMessage());
-       }
+       
     }
 
 }

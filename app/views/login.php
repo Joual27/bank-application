@@ -1,5 +1,6 @@
 <?php
 require_once("../config/config.php");
+require_once("../config/redirect.php");
 session_start();
 
 $loginIssue = "";

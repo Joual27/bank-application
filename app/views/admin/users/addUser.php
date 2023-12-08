@@ -1,10 +1,14 @@
 <?php 
 
 include '../../incfile/header.php';
-include '../../incfile/sidebar.php';
 require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/repositories/database.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/config/redirect.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/models/User.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/services/UserInterface.php");
 
-
+$addresID = uniqid();
+$agencyID = uniqid();
+$userID = uniqid();
 $errors = [
     'userErr' => '',
     'emailErr' => '',
@@ -18,13 +22,32 @@ $errors = [
     'agencyErr' => '',
     'codePostalErr' => ''
   ];
+
     
   // Validation Formulaire User 
   if (isset($_POST['addUser'])) {
-    if (empty($_POST['username'])) {
+    $data = [
+      'username' => $_POST['username'],
+      'password' => $_POST['password'],
+      'email' => $_POST['email'],
+      'phone' => $_POST['phone'],
+      'quart' => $_POST['quart'],
+      'ville' => $_POST['ville'],
+      'rue' => $_POST['rue'],
+      'userID' => $userID,
+      'adressID' => $addresID,
+      'agencyID' => $_POST['agency'],
+      'roleName' => $_POST['role'],
+      'codePostal' => $_POST['CodePostal']
+    ];
+
+
+
+
+    if (empty($data['username'])) {
         $errors['userErr'] = "Please Enter your username";
     }else {
-        $username = $_POST['username'];
+        $username = $data['username'];
         $pattern = '/^[a-zA-Z0-9_]{3,20}$/';
         if (!preg_match($pattern, $username)) {
             $errors['userErr'] = "Please Enter Correct username";
@@ -32,10 +55,10 @@ $errors = [
             $errors['userErr'] = ""; 
         }
     }
-    if (empty($_POST['email'])) {
+    if (empty($data['email'])) {
         $errors['emailErr'] = "Please Enter your email";
     }else {
-        $email = $_POST['email'];
+        $email = $data['email'];
         $pattern = '/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
         if (!preg_match($pattern, $email)) {
             $errors['emailErr'] = "Please Enter Correct email";
@@ -43,10 +66,10 @@ $errors = [
             $errors['emailErr'] = ""; 
         }
     }
-    if (empty($_POST['phone'])) {
+    if (empty($data['phone'])) {
         $errors['phoneErr'] = "Please Enter your Phone";
     }else {
-        $phone = $_POST['phone'];
+        $phone = $data['phone'];
         $pattern = '/^\+212[5-9]\d{8}$/';
         if (!preg_match($pattern, $phone)) {
             $errors['phoneErr'] = "Please Enter Correct Phone";
@@ -54,10 +77,10 @@ $errors = [
             $errors['phoneErr'] = ""; 
         }
     }
-    if (empty($_POST['ville'])) {
+    if (empty($data['ville'])) {
         $errors['villeErr'] = "Please Enter your Ville";
     }else {
-        $ville = $_POST['ville'];
+        $ville = $data['ville'];
         $pattern = '/^[A-Za-zÀ-ÖØ-öø-ÿ -]+$/u';
         if (!preg_match($pattern, $ville)) {
             $errors['villeErr'] = "Please Enter Correct Vile";
@@ -65,10 +88,10 @@ $errors = [
             $errors['villeErr'] = ""; 
         }
     }
-    if (empty($_POST['rue'])) {
+    if (empty($data['rue'])) {
         $errors['rueErr'] = "Please Enter your rue";
     }else {
-        $rue = $_POST['rue'];
+        $rue = $data['rue'];
         $pattern = '/^[A-Za-zÀ-ÖØ-öø-ÿ -]+$/u';
         if (!preg_match($pattern, $rue)) {
             $errors['rueErr'] = "Please Enter Correct Vile";
@@ -76,31 +99,61 @@ $errors = [
             $errors['rueErr'] = ""; 
         }
     }
-    if (empty($_POST['quartier'])) {
+    if (empty($data['quart'])) {
         $errors['quartierErr'] = "Please Enter your Quartier";
     }else {
-        $quartier = $_POST['quartier'];
-        $pattern = '/^[A-Za-zÀ-ÖØ-öø-ÿ -]+$/u';
-        if (!preg_match($pattern, $quartier)) {
-            $errors['quartierErr'] = "Please Enter Correct Quartier";
-        }else{
-            $errors['quartierErr'] = ""; 
-        }
+      $errors['quartierErr'] = "";
+
     }
-    if (empty($_POST['password'])) {
-        $errors['passwordErr'] = "Please Enter your password";
+    if (empty($data['password'])) {
+        $errors['passErr'] = "Please Enter your password";
     }else {
-        $password = $_POST['password'];
+        $password = $data['password'];
         $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+[\]{}|;:\'",.<>?\/]).{8,}$/';
         if (!preg_match($pattern, $password)) {
-            $errors['passwordErr'] = "Please Enter Correct password";
+            $errors['passErr'] = "Please Enter Correct password";
         }else{
-            $errors['passwordErr'] = ""; 
+            $errors['passErr'] = ""; 
         }
     }if ($_POST['password'] !== $_POST['confirmePassword'] ) {
         $errors['confirmPassErr'] = "Please Enter the same password";
+    }else {
+  $errors['confirmPassErr'] = "";
+    }if (empty($data['roleName'])) {
+      $errors['roleErr'] = "Please Enter Role";
+    }else {
+      $errors['roleErr'] = "";
+
     }
-  }
+    if (empty($errors['userErr']) && empty($errors['emailErr']) && empty($errors['phoneErr']) 
+    && empty($errors['villeErr']) && empty($errors['rueErr']) && empty($errors['quartierErr']) && empty($errors['passErr']) && empty($errors['confirmPassErr']) && empty($errors['roleErr'])
+    && empty($errors['agencyErr']) && empty($errors['codePostalErr'])) {
+      
+    $db = new Database();
+
+    $userService = new UserService($db);
+    $newUser = new User($data['userID'] , $data['adressID'] , $data['agencyID'] , $data['username'] , $data['password'] , $data['email'] , $data['phone'] , $data['ville'] , $data['rue'] , $data['quart'] , $data['codePostal'] , $data['roleName']);
+
+      try {
+        $userService->addUser($newUser);
+        echo "Added Succefully";
+        Redirect('users.php', false);
+      } catch (PDOException $e) {
+        die("Not Added " . $e->getMessage());
+      }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
 
 ?>
 
@@ -117,19 +170,10 @@ $errors = [
     </div>
       <!-- ========== Add to Table USERS ================== -->
       <div class="">
-        <!-- Id User -->
-          <div class="relative z-0 w-72 mb-5 group">
-              <input type="hidden" name="userID" value="<?= uniqid(); ?>" id="username" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
-          </div>
-          <div class="relative z-0 w-72 mb-5 group">
-              <input type="hidden" name="adressID" value="<?= uniqid(); ?>" id="username" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
-          </div>
-          <div class="relative z-0 w-72 mb-5 group">
-              <input type="hidden" name="agencyID" value="<?= uniqid(); ?>" id="username" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
-          </div>
+
           <div class="flex gap-5 my-5">
               <div class="relative w-[50%] z-0 w-72 mb-5 group">
-                <input type="text" name="username" id="username" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
+                <input type="text" name="username"  class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
                 <label for="username" class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
                 <span class="text-lg font-semibold text-rose-500"><?= $errors['userErr'] ?></span>
             </div>
@@ -162,7 +206,7 @@ $errors = [
 
                 </div>
               <div class="relative z-0 w-[50%]  mb-5 group">
-                <input type="text" name="quartier" id="quartier" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
+                <input type="text" name="quart" id="quartier" class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
                 <label for="quartier" class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Quartier</label>
                 <span class="text-lg font-semibold text-rose-500"><?= $errors['quartierErr'] ?></span>
 
@@ -185,11 +229,7 @@ $errors = [
           <div class="flex gap-4">
             <!-- ============ Fetch Role User =========== -->
                 <?php 
-                    $db = new Database();
-                    $db->connectDB();
-                    $sql = "SELECT * FROM role";
-                    // $stmt = $db->query()
-                
+                    
                 
                 
                 
@@ -200,16 +240,19 @@ $errors = [
 
               <div class="w-[33.33%]">
                   <select id="role" name="role" class=" w-full block py-2.5 px-0 w-44 text-lg text-gray-900 bg-gray-800 p-2 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                   <!-- <label for="role" class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Select Role</label> -->
+                   <label for="role" class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Select Role</label>
                     <option disabled selected value=""  class="bg-dark-gray-800">Select Role</option>
-                    <option  class="bg-dark-gray-800">Admin</option>
+                    <option  class="bg-dark-gray-800">admin</option>
+                    <option  class="bg-dark-gray-800">sub_admin</option>
+                    <option  class="bg-dark-gray-800">client</option>
                 </select>
+                <span class="text-lg font-semibold text-rose-500"><?= $errors['roleErr'] ?></span>
               </div>
               <div class="w-[33.33%]">
                   <select id="agency" name="agency" class=" w-full block py-2.5 px-0 w-44 text-lg text-gray-900 bg-gray-800 p-2 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                    <!-- <label for="role" class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Select Role</label> -->
-                    <option disabled selected value ="" class="bg-dark-gray-800">Select Agency</option>
-                    <option class="bg-dark-gray-800" value="1" >center ville</option>
+                    <option disabled selected  class="bg-dark-gray-800">Select Agency</option>
+                    <option  class="bg-dark-gray-800" value="1">center ville</option>
                 </select>
               </div>
               <div class="relative z-0 w-44 mb-5 group w-[33.33%]">

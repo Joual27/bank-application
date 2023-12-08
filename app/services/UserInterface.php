@@ -2,24 +2,14 @@
 
 
 
-
-
-
 interface UserInterface{
     public function getAllUsers();
-    public function addUser(User $data);
-    
-    public function getUserById($id);
-
+    public function getUserByID($userID);
+    public function addUser(User $user);
     public function updateUser(User $data);
-
-    public function deleteUser($id);
+    public function deleteUser($userID);
 
 }
-
-
-
-?>
 
 
 

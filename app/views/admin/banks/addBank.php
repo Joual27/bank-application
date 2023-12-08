@@ -1,6 +1,8 @@
 <?php 
 
 include '../../incfile/header.php';
+include '../../incfile/sidebar.php';
+include '../../incfile/navbar.php';
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/repositories/database.php");
 require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/services/BankService.php");
@@ -105,3 +107,7 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/models/Bank.php");
   
   </form>
 </div>  
+<?php
+include '../../incfile/footer.php';
+
+?>

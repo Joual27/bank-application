@@ -2,13 +2,11 @@
 
 
 
-interface AgencyInterface{
+interface AgencyServiceInterface{
     public function getAllAgencies();
-    public function getAgencyById($agencyId);
-    public function addAgency(Agency $agency,$adress);
-
-
-    public function updateAgency(Agency $agency,$adress);
+    public function getAgencyById($agencyId):Agency;
+    public function addAgency(Agency $agency);
+    public function updateAgency(Agency $agency);
     public function deleteAgency($agencyId);
 
 }

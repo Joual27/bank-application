@@ -1,4 +1,7 @@
 <?php
+  include '../../incfile/header.php';
+  include '../../incfile/sidebar.php';
+  include '../../incfile/navbar.php';
 
 
 session_start();

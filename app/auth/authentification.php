@@ -1,11 +1,11 @@
 <?php
     require_once '../repositories/database.php';
+    require_once '../config/redirect.php';
         
     session_start();
 
     $username = $_GET['username'];
     $password = $_GET['pw'];
-
     
     
     $db = new Database();
@@ -14,10 +14,8 @@
     $db->query($sql);
     $db->bind(":user" , $username);
     $db->bind(":userPass" , $password);
- 
     try {
         $row = $db->fetchOne();
-        // print_r($row);
     } catch (PDOException $e) {
         die($e->getMessage());
     }
@@ -29,10 +27,9 @@
         $_SESSION['password'] = $password;
         
         $userID = $row->userID;  
-        var_dump($userID); 
-        $sql = "SELECT * FROM roleOfUser WHERE userID = $userID";
-
+        $sql = "SELECT * FROM roleOfUser WHERE userID = :userID";
         $db->query($sql);
+        $db->bind(":userID" , $userID);
         try {
             $roleOfuser = $db->fetchOne();
         } catch (PDOException $e) {
@@ -44,8 +41,6 @@
         }else {
             $_SESSION['roleUser'] = $roleOfuser->roleName;
             Redirect(APPROOT . '/views/admin/index.php' , false);
-
-           
         }
         
     }

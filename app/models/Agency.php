@@ -11,18 +11,17 @@ class Agency{
     private $latitude ;
     private $bankId ;
     private $adressId;
-    // private $agencyService;
+    private $agencyService;
+
 
     
-
-    
-    public function __construct($agencyId,$longitude,$latitude,$bankId,$adressId){
+    public function __construct($agencyId,$longitude,$latitude,$bankId,$adressId,AgencyService $agencyService){
         $this->agencyId = $agencyId;
         $this->longitude = $longitude;
         $this->latitude = $latitude;
         $this->bankId = $bankId;
         $this->adressId = $adressId;
-    
+        $this->agencyService = $agencyService;
     }
 
     public function getAgencyId(){
@@ -32,6 +31,12 @@ class Agency{
         $this->agencyId = $agencyId;
     }
 
+    public function getAgencyService(){
+        return $this->agencyService;
+    }
+    public function setAgencyService(AgencyService $agencyService){
+        $this->agencyService = $agencyService;
+    }
     public function getLongitude(){
         return $this->longitude;
     }
