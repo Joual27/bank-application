@@ -14,7 +14,7 @@
 
       <div class="relative overflow-x-auto shadow-md  ml-[185px] top-12 sm:rounded-lg">
         <button id="btnForm" class="font-bold  px-5 py-1 border-3 shadow-md transition ease-in duration-500 border-blue-300 dark:bg-gray-800 text-gray-200 font-serif ">
-            <a href="addUser.php">+ Add User</a>
+            <a href="userForm.php">+ Add User</a>
         </button>
 
         <table class="w-full text-lg text-left rtl:text-right mt-5 text-gray-500 dark:text-gray-400">

@@ -39,42 +39,34 @@
                     <th scope="col" class="px-6 py-3">
                         Logo
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                        ACTIONS
-                    </th>
-                    
-                    
                 </tr>
             </thead>
             <tbody>
-            <?php
-                    foreach ($banks as $bank) {
-                        $imgUrl = "bank-app/public/imgs/uploads/" . $bank->bankLogo;
+                <?php
+                
 
-                        echo "
-                            <tr class='text-xs text-center font-semibold uppercase bg-gray-50'>
-                                <td scope='col' class='px-6 py-3'>
-                                    $bank->bankID
+                   foreach($banks as $bank){
+                    
+                    $imgUrl ="bank-app/public/imgs/uploads/".$bank->bankLogo;
+
+                    echo "
+                        <tr class='text-xs text-center font-semibold uppercase bg-gray-50  '>
+                            <td scope='col' class='px-6 py-3'>
+                                $bank->bankID
                                 </td>
                                 <td scope='col' class='px-6 py-3'>
                                     $bank->bankName
                                 </td>
-                                <td scope='col' class='px-6 py-3 relative'>
-                                    <img class='absolute w-[50%] h-[50%] left-[25%] bottom-[25%]' src='http://localhost/$imgUrl' alt='bank logo'>
-                                </td>
-                            <td scope='col' class='px-6 py-3 flex items-center w-[30%] mx-auto gap-3'>
-                                    <a href='deleteBank.php?bank=$bank->bankID' class='flex items-center justify-center bg-rose-500 text-white w-[40px] h-[40px]'>
-                                        <i class='fa-solid fa-trash'></i>
-                                    </a>
-                                    <a href='updateBank.php?bank=$bank->bankID' class='flex items-center justify-center bg-green-500 text-white w-[40px] h-[40px]'>
-                                        <i class='fa-solid fa-pen'></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        ";
-                    }
-                    ?>
+                            <td scope='col' class='px-6 py-3 relative'>
+                                <img class='absolute w-[50%] h-[50%] left-[25%] bottom-[25%]' src='http://localhost/$imgUrl' alt='bank logo'>
+                            </td>
+                        </tr>
 
+                    ";
+                   }
+                
+                
+                ?>
                  
     
             </tbody>

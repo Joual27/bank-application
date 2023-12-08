@@ -38,31 +38,14 @@ class BankService implements ServiceBankInterface{
        }
     }
     public function updateBank(Bank $bank){
-        $updateBank = "update bank set bankName = :bankName, bankLogo = :bankLogo where bankID = :bankId ";
-        $this->db->query($updateBank);
-        $this->db->bind(":bankName",$bank->getBankName());
-        $this->db->bind(":bankLogo",$bank->getlogo());
-        $this->db->bind(":bankId",$bank->getBankId());
-        try{
-            $this->db->execute();
-        }
-        catch(PDOException $e){
-            die($e->getMessage());
+
     }
-}
+    public function deleteBank($bankId){
 
-        public function deleteBank($bankId){
-            $deleteBank = "delete from bank where bankID = :bankId";
-            $this->db->query($deleteBank);
-            $this->db->bind(":bankId",$bankId);
-            try{
-                $this->db->execute();
-            }
-            catch(PDOException $e){
-                die($e->getMessage());
-            }
-                }
+    }
 
+
+    
 }
 
 

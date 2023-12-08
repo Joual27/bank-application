@@ -3,7 +3,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/bank-app/app/repositories/Database.php");
 require_once("AgencyServiceInterface.php");
 
-class AgencyService implements AgencyInterface{
+class AgencyService implements AgencyServiceInterface{
 
     private $db ;
 

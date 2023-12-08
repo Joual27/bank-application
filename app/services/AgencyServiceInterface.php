@@ -2,7 +2,7 @@
 
 
 
-interface AgencyInterface{
+interface AgencyServiceInterface{
     public function getAllAgencies();
     public function getAgencyById($agencyId);
     public function addAgency(Agency $agency,$adress);
